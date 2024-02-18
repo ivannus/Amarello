@@ -1,0 +1,559 @@
+swagger: "2.0"
+info:
+  version: 0.0.1
+  title: API Gestion de Empleados
+  description: API Gestion de Empleados
+host: "examen-0012-apigee.amarello.cloud"
+basePath: /isc/aml/gestion-empleados/v1
+schemes:
+  - https
+produces:
+  - application/json
+securityDefinitions:
+  Bearer:
+    description: >
+      Para acceder a la API se debe pasar una cookie válido en todas las
+      consultas. La siguiente sintaxis se debe utilizar en el encabezado
+      "Authorization" :
+        Bearer: 2zzLJmBAtTNIU8nF8e8XbmDvaNGs
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - Bearer: []
+paths:
+  /empleados:
+    post:
+      description: "Creación de empleados."
+      tags:
+        - Creación de empleados.
+      parameters:
+        - name: body
+          required: true
+          description: "Datos del empleado."
+          in: body
+          schema:
+            $ref: "#/definitions/datosPersonales"
+      responses:
+        201:
+          description: "La solicitud se creó con éxito."
+          schema:
+            $ref: "#/definitions/altaRespuesta"
+          examples:
+            application/json: |-
+              {
+                "mensaje": "Operacion Exitosa",
+                "folio": "kioapigeermczdev02-15628-328292-3",
+                "resultado": {
+                  "idEmpleado": 123
+                }
+              }
+             
+        400:
+          description: El servidor no pudo comprender la solicitud debido a una sintaxis no válida.
+          schema:
+            $ref: "#/definitions/error400"
+          examples:
+            application/json: |-
+              {
+                "codigo": "400.isc-aml-gestion-empleados.4000",
+                "mensaje": "Peticion invalida",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#400.isc-aml-gestion-empleados.4000",
+                "detalles": [
+                  "Parametros incorrectos"
+                ]
+              }
+       
+        401:
+          description: Indica que el recurso solicitado existe pero se ha denegado el acceso al mismo.
+          schema:
+            $ref: "#/definitions/error401"
+          examples:
+            application/json: |-
+              {
+                "codigo": "401.isc-aml-gestion-empleados.4001",
+                "mensaje": "Acceso denegado",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#401.isc-aml-gestion-empleados.4001",
+                "detalles": [
+                  "No autorizado."
+                ]
+              }
+
+        500:
+          description: El servidor ha encontrado una situación que no sabe cómo manejar.
+          schema:
+            $ref: "#/definitions/error500"
+          examples:
+            application/json: |-
+              {
+                "codigo": "500.isc-aml-gestion-empleados.5000",
+                "mensaje": "Error de servidor.",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#500.isc-aml-gestion-empleados.5000",
+                "detalles": [
+                  "Error de servidor"
+                ]
+              }
+              
+      security:
+        - Bearer: [] 
+
+  /empleados/{idEmpleado}:
+    get:
+      description: "Busqueda de empleados."
+      tags:
+        - Busqueda de empleados.
+      parameters:
+        - name: idEmpleado
+          type: integer
+          in: path
+          required: true
+          description: |
+            `Id correspondiente al empleado`
+          default: 123
+          format: "[0-9]{20}"
+      responses:
+        200:
+          description: "Ok."
+          schema:
+            $ref: "#/definitions/consultaEmpleadosRespuesta"
+          examples:
+            application/json: |-
+              {
+                "mensaje": "Operacion Exitosa",
+                "folio": "kioapigeermczdev02-15628-328292-3",
+                "resultado": {
+                  "empleado": {
+                    "nombreCompleto": "Iván Sánchez Corona",
+                    "edad": 34,
+                    "fechaNacimiento": "23/08/1988"
+                  }
+                }
+              }
+             
+        400:
+          description: El servidor no pudo comprender la solicitud debido a una sintaxis no válida.
+          schema:
+            $ref: "#/definitions/error400"
+          examples:
+            application/json: |-
+              {
+                "codigo": "400.isc-aml-gestion-empleados.4000",
+                "mensaje": "Peticion invalida",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#400.isc-aml-gestion-empleados.4000",
+                "detalles": [
+                  "Parametros incorrectos"
+                ]
+              }
+       
+        404:
+          description: Indica que el recurso solicitado existe pero se ha denegado el acceso al mismo.
+          schema:
+            $ref: "#/definitions/error404"
+          examples:
+            application/json: |-
+              {
+                "codigo": "404.isc-aml-gestion-empleados.4004",
+                "mensaje": "No existe información disponible sobre el recurso solicitado",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "\"https://dev-api.com/info#404.isc-aml-gestion-empleados.4004\"",
+                "detalles": [
+                  "No existe información disponible sobre el recurso solicitado"
+                ]
+              }
+
+        500:
+          description: El servidor ha encontrado una situación que no sabe cómo manejar.
+          schema:
+            $ref: "#/definitions/error500"
+          examples:
+            application/json: |-
+              {
+                "codigo": "500.isc-aml-gestion-empleados.5000",
+                "mensaje": "Error de servidor.",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#500.isc-aml-gestion-empleados.5000",
+                "detalles": [
+                  "Error de servidor"
+                ]
+              }
+              
+      security:
+        - Bearer: []         
+              
+    put:
+      description: "Modifica a un empleado."
+      tags:
+        - Modificación de empleados.
+      parameters:
+        - name: idEmpleado
+          type: integer
+          in: path
+          required: true
+          description: |
+            `Id correspondiente al empleado`
+          default: 123
+          format: "[0-9]{20}"
+        - name: body
+          required: true
+          description: "Datos del empleado."
+          in: body
+          schema:
+            $ref: "#/definitions/datosPersonales"
+      responses:
+        200:
+          description: "La solicitud se creó con éxito."
+          schema:
+            $ref: "#/definitions/altaRespuesta"
+          examples:
+            application/json: |-
+              {
+                "mensaje": "Operacion Exitosa",
+                "folio": "kioapigeermczdev02-15628-328292-3",
+                "resultado": {
+                  "idEmpleado": 123
+                }
+              }
+             
+        400:
+          description: El servidor no pudo comprender la solicitud debido a una sintaxis no válida.
+          schema:
+            $ref: "#/definitions/error400"
+          examples:
+            application/json: |-
+              {
+                "codigo": "400.isc-aml-gestion-empleados.4000",
+                "mensaje": "Peticion invalida",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#400.isc-aml-gestion-empleados.4000",
+                "detalles": [
+                  "Parametros incorrectos"
+                ]
+              }
+       
+        404:
+          description: Indica que el recurso solicitado existe pero se ha denegado el acceso al mismo.
+          schema:
+            $ref: "#/definitions/error404"
+          examples:
+            application/json: |-
+              {
+                "codigo": "404.isc-aml-gestion-empleados.4004",
+                "mensaje": "No existe información disponible sobre el recurso solicitado",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "\"https://dev-api.com/info#404.isc-aml-gestion-empleados.4004\"",
+                "detalles": [
+                  "No existe información disponible sobre el recurso solicitado"
+                ]
+              }
+
+        500:
+          description: El servidor ha encontrado una situación que no sabe cómo manejar.
+          schema:
+            $ref: "#/definitions/error500"
+          examples:
+            application/json: |-
+              {
+                "codigo": "500.isc-aml-gestion-empleados.5000",
+                "mensaje": "Error de servidor.",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#500.isc-aml-gestion-empleados.5000",
+                "detalles": [
+                  "Error de servidor"
+                ]
+              }
+              
+      security:
+        - Bearer: []
+        
+    delete:
+      description: "Eliminación de empleados."
+      tags:
+        - Eliminación de empleados.
+      parameters:
+        - name: idEmpleado
+          type: integer
+          in: path
+          required: true
+          description: |
+            `Id correspondiente al empleado`
+          default: 123
+          format: "[0-9]{20}"
+      responses:
+        200:
+          description: "Ok."
+          schema:
+            $ref: "#/definitions/eliminacionEmpleadosRespuesta"
+          examples:
+            application/json: |-
+              {
+                "mensaje": "Operacion Exitosa",
+                "folio": "kioapigeermczdev02-15628-328292-3"
+              }
+             
+        400:
+          description: El servidor no pudo comprender la solicitud debido a una sintaxis no válida.
+          schema:
+            $ref: "#/definitions/error400"
+          examples:
+            application/json: |-
+              {
+                "codigo": "400.isc-aml-gestion-empleados.4000",
+                "mensaje": "Peticion invalida",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#400.isc-aml-gestion-empleados.4000",
+                "detalles": [
+                  "Parametros incorrectos"
+                ]
+              }
+       
+        404:
+          description: Indica que el recurso solicitado existe pero se ha denegado el acceso al mismo.
+          schema:
+            $ref: "#/definitions/error404"
+          examples:
+            application/json: |-
+              {
+                "codigo": "404.isc-aml-gestion-empleados.4004",
+                "mensaje": "No existe información disponible sobre el recurso solicitado",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "\"https://dev-api.com/info#404.isc-aml-gestion-empleados.4004\"",
+                "detalles": [
+                  "No existe información disponible sobre el recurso solicitado"
+                ]
+              }
+
+        500:
+          description: El servidor ha encontrado una situación que no sabe cómo manejar.
+          schema:
+            $ref: "#/definitions/error500"
+          examples:
+            application/json: |-
+              {
+                "codigo": "500.isc-aml-gestion-empleados.5000",
+                "mensaje": "Error de servidor.",
+                "folio": "kioapigeermczdev03-2338-7058-1",
+                "info": "https://dev-api.com/info#500.isc-aml-gestion-empleados.5000",
+                "detalles": [
+                  "Error de servidor"
+                ]
+              }
+              
+      security:
+        - Bearer: []
+ 
+
+definitions:
+
+  datosPersonales:
+    properties:
+      nombreCompleto:
+        type: string
+        description: |-
+          Determina el nombre completo.
+        example: "Iván Sánchez Corona"
+      edad:
+        type: integer
+        description:  |-
+         Determina la edad.
+        example: 34
+      fechaNacimiento:
+        type: string
+        description: |-
+          Determina la fecha de nacimiento.
+        example: "23/08/1988"
+ 
+  altaRespuesta:
+    type: object
+    properties:
+      mensaje:
+        type: string
+        description: Descripcion de la operacion
+        example: "Operacion Exitosa"
+      folio:
+        type: string
+        description: Folio de operacion
+        example: "kioapigeermczdev02-15628-328292-3"
+      resultado:
+        type: object
+        properties:
+          idEmpleado:
+            type: integer
+            description: "Id asignado al empleado"
+            example: 123
+               
+  consultaEmpleadosRespuesta:
+    type: object
+    properties:
+      mensaje:
+        type: string
+        description: Descripcion de la operacion
+        example: "Operacion Exitosa"
+      folio:
+        type: string
+        description: Folio de operacion
+        example: "kioapigeermczdev02-15628-328292-3"
+      resultado:
+        type: object
+        properties:
+          empleado:
+              $ref: "#/definitions/datosPersonales"
+              
+  eliminacionEmpleadosRespuesta:
+    type: object
+    properties:
+      mensaje:
+        type: string
+        description: Descripcion de la operacion
+        example: "Operacion Exitosa"
+      folio:
+        type: string
+        description: Folio de operacion
+        example: "kioapigeermczdev02-15628-328292-3"
+ 
+  error400:
+    type: object
+    properties:
+      codigo:
+        type: string
+        description: "Peticion invalida."
+        example: "400.isc-aml-gestion-empleados.4000"
+      mensaje:
+        type: string
+        description: "Peticion invalida."
+        example: "Parámetros incorrectos"
+      folio:
+        type: string
+        description: "Número de folio de la operación."
+        example: "kioapigeermczdev03-31457-10379-1"
+      info:
+        type: string
+        description: "Rutas de ayuda para atender el error"
+        example: >-
+         " https://dev-api.com/info#400.isc-aml-gestion-empleados.4000"
+      detalles:
+        type: array
+        items:
+          type: string
+          description: "Mensajes generales para entender el error"
+          example: "Parametros incorrectos"
+ 
+  error401:
+    type: object
+    properties:
+      codigo:
+        type: string
+        description: "Acceso denegado"
+        example: "401.isc-aml-gestion-empleados.4001"
+      mensaje:
+        type: string
+        description: "No autorizado."
+        example: "Usuario no autorizado"
+      folio:
+        type: string
+        description: "Número de folio de la operación."
+        example: "kioapigeermczdev03-2338-7058-1"
+      info:
+        type: string
+        description: "Rutas de ayuda para atender el error"
+        example: >-
+          "https://dev-api.com/info#401.isc-aml-gestion-empleados.4001"
+      detalles:
+        type: array
+        items:
+          type: string
+          description: "Mensajes generales para entender el error"
+          example: "No autorizado"
+         
+  error404:
+    type: object
+    properties:
+      codigo:
+        type: string
+        description: "Recurso no encontrado"
+        example: "404.isc-aml-gestion-empleados.4004"
+      mensaje:
+        type: string
+        description: "Recurso no encontrado."
+        example: "No existe información disponible sobre el recurso solicitado"
+      folio:
+        type: string
+        description: "Número de folio de la operación."
+        example: "kioapigeermczdev03-2338-7058-1"
+      info:
+        type: string
+        description: "Rutas de ayuda para atender el error"
+        example: >-
+          "https://dev-api.com/info#404.isc-aml-gestion-empleados.4004"
+      detalles:
+        type: array
+        items:
+          type: string
+          description: "Mensajes generales para entender el error"
+          example: "No existe información disponible sobre el recurso solicitado"
+
+  error500:
+    type: object
+    properties:
+      codigo:
+        type: string
+        description: "Número de folio de la operación."
+        example: "500.isc-aml-gestion-empleados.5000"
+      mensaje:
+        type: string
+        description: "Error de servidor."
+        example: "Error inesperado."
+      folio:
+        type: string
+        description: "Número de folio de la operación."
+        example: "kioapigeermczdev03-2338-7058-1"
+      info:
+        type: string
+        description: "Rutas de ayuda para atender el error"
+        example: >-
+          "https://dev-api.com/info#500.isc-aml-gestion-empleados.5000"
+      detalles:
+        type: array
+        items:
+          type: string
+          description: "Mensajes generales para entender el error"
+          example: "Error de servidor."
+
+  summary:
+    type: object
+    properties:
+      empleados-post:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: >-
+              Realiza el alta de empleados.
+            example: "/empleados"
+      empleados-get:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: >-
+              Realiza la busqueda de empleados.
+            example: "/empleados/{idEmpleado}"
+      empleados-put:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: >-
+              Realiza la modificación de empleados.
+            example: "/empleados/{idEmpleado}"
+      empleados-delete:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: >-
+              Realiza la eliminación de empleados.
+            example: "/empleados/{idEmpleado}"
